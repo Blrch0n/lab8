@@ -1,0 +1,38 @@
+[
+  {
+    "lastName": "Батаа",
+    "firstName": "Болд",
+    "studentId": "B20210101",
+    "age": 20,
+    "dob": "2003-05-12",
+    "averageGrade": 3.45,
+    "onLeave": false
+  },
+  {
+    "lastName": "Дорж",
+    "firstName": "Сэргэлэн",
+    "studentId": "B20210205",
+    "age": 21,
+    "dob": "2002-11-08",
+    "averageGrade": 3.89,
+    "onLeave": false
+  },
+  {
+    "lastName": "Ганбат",
+    "firstName": "Оюунаа",
+    "studentId": "B20200310",
+    "age": 22,
+    "dob": "2001-02-25",
+    "averageGrade": 3.21,
+    "onLeave": true
+  },
+  {
+    "lastName": "Мөнх",
+    "firstName": "Тэмүүлэн",
+    "studentId": "B20210415",
+    "age": 20,
+    "dob": "2003-09-14",
+    "averageGrade": 3.67,
+    "onLeave": false
+  }
+]

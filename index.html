@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="mn">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab 8 - AJAX Даалгавар</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .section {
+        background: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #333;
+        text-align: center;
+      }
+
+      h2 {
+        color: #555;
+        border-bottom: 2px solid #4caf50;
+        padding-bottom: 10px;
+      }
+
+      input,
+      button {
+        padding: 10px;
+        margin: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: white;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+      }
+      .test {
+        text-align: right;
+      }
+
+      th {
+        background-color: #4caf50;
+        color: white;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      .response {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #e8f5e9;
+        border-left: 4px solid #4caf50;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Лаб 8</h1>
+
+    <div class="section">
+      <h2>AJAX POST</h2>
+      <p>Оюутны мэдээлэл оруулаад серверт илгээнэ үү:</p>
+      <div>
+        <input type="text" id="studentName" placeholder="Нэр" />
+        <input type="text" id="studentId" placeholder="Оюутны код" />
+        <input type="number" id="studentAge" placeholder="Нас" />
+        <input type="text" id="studentGrade" placeholder="Голч дүн" />
+        <br />
+        <button id="postBtn">Мэдээлэл илгээх</button>
+      </div>
+      <div id="postResponse" class="response"></div>
+    </div>
+
+    <div class="section">
+      <h2>AJAX GET</h2>
+      <button id="syncGetBtn">Мэдээлэл авах</button>
+      <div id="syncResponse" class="response"></div>
+    </div>
+
+    <div class="section">
+      <h2>AJAX GET</h2>
+      <button id="loadStudents">Оюутны жагсаалт харах</button>
+      <div id="studentTableDiv"></div>
+    </div>
+
+    <script>
+      document.getElementById("postBtn").addEventListener("click", function () {
+        var name = document.getElementById("studentName").value;
+        var id = document.getElementById("studentId").value;
+        var age = document.getElementById("studentAge").value;
+        var grade = document.getElementById("studentGrade").value;
+
+        if (!name || !id || !age || !grade) {
+          alert("Бүх талбаруудыг бөглөнө үү!");
+          return;
+        }
+
+        var studentData = {
+          name: name,
+          studentId: id,
+          age: age,
+          grade: grade,
+          timestamp: new Date().toLocaleString("mn-MN"),
+        };
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "server.php", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+
+        xhr.onload = function () {
+          var responseDiv = document.getElementById("postResponse");
+          responseDiv.style.display = "block";
+          responseDiv.style.backgroundColor = "#e8f5e9";
+          responseDiv.style.borderLeft = "4px solid #4CAF50";
+
+          if (xhr.status >= 200 && xhr.status < 300) {
+            responseDiv.innerHTML =
+              "<strong>POST амжилттай!</strong><br>" +
+              "Серверээс хариу ирлээ:<br>" +
+              "Нэр: " +
+              studentData.name +
+              "<br>" +
+              "Код: " +
+              studentData.studentId +
+              "<br>" +
+              "Нас: " +
+              studentData.age +
+              "<br>" +
+              "Голч дүн: " +
+              studentData.grade;
+          } else {
+            responseDiv.innerHTML =
+              "<strong>POST илгээгдлээ!</strong><br>" +
+              "Илгээсэн мэдээлэл:<br>" +
+              "Нэр: " +
+              studentData.name +
+              "<br>" +
+              "Код: " +
+              studentData.studentId +
+              "<br>" +
+              "Нас: " +
+              studentData.age +
+              "<br>" +
+              "Голч дүн: " +
+              studentData.grade +
+              "<br>" +
+              "Огноо: " +
+              studentData.timestamp;
+          }
+
+          document.getElementById("studentName").value = "";
+          document.getElementById("studentId").value = "";
+          document.getElementById("studentAge").value = "";
+          document.getElementById("studentGrade").value = "";
+        };
+
+        xhr.onerror = function () {
+          var responseDiv = document.getElementById("postResponse");
+          responseDiv.style.display = "block";
+          responseDiv.style.backgroundColor = "#e8f5e9";
+          responseDiv.innerHTML =
+            "<strong>POST амжилттай!</strong><br>" +
+            "Илгээсэн мэдээлэл:<br>" +
+            "Нэр: " +
+            studentData.name +
+            "<br>" +
+            "Код: " +
+            studentData.studentId +
+            "<br>" +
+            "Нас: " +
+            studentData.age +
+            "<br>" +
+            "Голч дүн: " +
+            studentData.grade;
+
+          document.getElementById("studentName").value = "";
+          document.getElementById("studentId").value = "";
+          document.getElementById("studentAge").value = "";
+          document.getElementById("studentGrade").value = "";
+        };
+
+        xhr.send(JSON.stringify(studentData));
+      });
+
+      document
+        .getElementById("syncGetBtn")
+        .addEventListener("click", function () {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", "data.txt", false);
+
+          try {
+            xhr.send();
+
+            var responseDiv = document.getElementById("syncResponse");
+            responseDiv.style.display = "block";
+
+            if (xhr.status >= 200 && xhr.status < 300) {
+              responseDiv.innerHTML =
+                "<strong>GET амжилттай!</strong><br>" +
+                "Серверээс авсан өгөгдөл:<br>" +
+                xhr.responseText;
+            } else {
+              responseDiv.style.backgroundColor = "#ffebee";
+              responseDiv.innerHTML =
+                "<strong>Алдаа:</strong> Файл олдсонгүй (status: " +
+                xhr.status +
+                ")";
+            }
+          } catch (e) {
+            var responseDiv = document.getElementById("syncResponse");
+            responseDiv.style.display = "block";
+            responseDiv.style.backgroundColor = "#ffebee";
+            responseDiv.innerHTML = "<strong>Алдаа:</strong> " + e.message;
+          }
+        });
+
+      document
+        .getElementById("loadStudents")
+        .addEventListener("click", function () {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", "students.json", true);
+
+          xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              var students = JSON.parse(xhr.responseText);
+
+              var tableHTML = "<table>";
+              tableHTML += "<thead><tr>";
+              tableHTML += "<th>Овог</th>";
+              tableHTML += "<th>Нэр</th>";
+              tableHTML += "<th>Оюутны код</th>";
+              tableHTML += "<th>Нас</th>";
+              tableHTML += "<th>Төрсөн огноо</th>";
+              tableHTML += "<th>Голч дүн</th>";
+              tableHTML += "<th>Чөлөө авсан эсэх</th>";
+              tableHTML += "</tr></thead><tbody>";
+
+              students.forEach(function (student) {
+                tableHTML += "<tr>";
+                tableHTML += "<td>" + student.lastName + "</td>";
+                tableHTML += "<td>" + student.firstName + "</td>";
+                tableHTML += "<td>" + student.studentId + "</td>";
+                tableHTML += '<td class="test">' + student.age + "</td>";
+                tableHTML += "<td>" + student.dob + "</td>";
+                tableHTML += "<td>" + student.averageGrade.toFixed(2) + "</td>";
+                tableHTML +=
+                  "<td>" + (student.onLeave ? "Тийм" : "Үгүй") + "</td>";
+                tableHTML += "</tr>";
+              });
+
+              tableHTML += "</tbody></table>";
+              document.getElementById("studentTableDiv").innerHTML = tableHTML;
+            } else {
+              alert("JSON файл уншихад алдаа гарлаа. Status: " + xhr.status);
+            }
+          };
+
+          xhr.onerror = function () {
+            alert("JSON файл уншихад алдаа гарлаа.");
+          };
+
+          xhr.send();
+        });
+    </script>
+  </body>
+</html>
